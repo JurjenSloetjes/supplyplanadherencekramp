@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: Navigating Supply Plan Adherence Performance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --kramp-red: #9B1915;
+            --kramp-black: #000000;
+            --kramp-white: #FFFFFF;
+            --kramp-yellow: #FFB332;
+            --kramp-aqua: #63C4D8;
+            --kramp-turquoise: #65B994;
+            --kramp-lavender: #697DB6;
+            --kramp-blue: #194461;
+
+            /* Darker shades for borders */
+            --kramp-red-darker: #780000; /* Dark Red from branding */
+            --kramp-yellow-darker: #E38A0A; /* Dark Yellow from branding */
+            --kramp-aqua-darker: #0096A7; /* Dark Aqua from branding */
+            --kramp-turquoise-darker: #008259; /* Dark Turquoise from branding */
+            --kramp-lavender-darker: #2F498D; /* Dark Lavender from branding */
+        }
+
+        body {
+            font-family: 'Barlow Condensed', sans-serif;
+            background-color: var(--kramp-white);
+            color: var(--kramp-black);
+        }
+        .font-barlow-regular {
+            font-weight: 400;
+        }
+        .font-barlow-bold {
+            font-weight: 700;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Default max-width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+            }
+        }
+        @media (min-width: 1024px) { /* lg breakpoint */
+            .chart-container {
+                height: 400px; /* Taller on larger screens */
+            }
+        }
+        .header-bg {
+            background-color: var(--kramp-red); /* Changed to Kramp Red */
+        }
+        .kpi-card {
+            background-color: var(--kramp-white);
+            border-radius: 0.5rem;
+            border: 3px solid #E0E0E0; /* Bolder, slightly darker border for white cards */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--kramp-black); /* Default text for kpi-card */
+        }
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--kramp-red);
+        }
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--kramp-black);
+            margin-top: 0.25rem;
+        }
+        .section-title {
+            color: var(--kramp-black);
+        }
+        .accent-red-kramp {
+            color: var(--kramp-red);
+        }
+        .flowchart-step {
+            border: 2px solid var(--kramp-black);
+            background-color: var(--kramp-white);
+            color: var(--kramp-black);
+        }
+        .flowchart-arrow {
+            font-size: 1.5rem;
+            color: var(--kramp-black);
+        }
+        .bg-kramp-red {
+            background-color: var(--kramp-red);
+        }
+        .text-kramp-white {
+            color: var(--kramp-white);
+        }
+        .text-kramp-black {
+            color: var(--kramp-black);
+        }
+        .text-kramp-yellow {
+            color: var(--kramp-yellow);
+        }
+        .border-kramp-black {
+            border-color: var(--kramp-black);
+        }
+        .button-kramp-black {
+            background-color: var(--kramp-black);
+            color: var(--kramp-white);
+        }
+        .button-kramp-black:hover {
+            background-color: #333333; /* Slightly lighter black on hover */
+        }
+        /* Removed .highlight-red-bg as per user request */
+        .emphasize-yellow-text {
+            color: var(--kramp-yellow);
+            font-weight: 700;
+        }
+
+        /* Transparent Expressive Colors for Strategic Perspective Cards */
+        .bg-kramp-turquoise-transparent {
+            background-color: rgba(101, 185, 148, 0.2); /* Turquoise with 20% opacity */
+            border: 3px solid var(--kramp-turquoise-darker); /* Bolder, darker border */
+            box-shadow: none; /* Remove default shadow */
+        }
+        .bg-kramp-yellow-transparent {
+            background-color: rgba(255, 185, 50, 0.2); /* Yellow with 20% opacity */
+            border: 3px solid var(--kramp-yellow-darker); /* Bolder, darker border */
+            box-shadow: none; /* Remove default shadow */
+        }
+        .bg-kramp-aqua-transparent {
+            background-color: rgba(99, 196, 216, 0.2); /* Aqua with 20% opacity */
+            border: 3px solid var(--kramp-aqua-darker); /* Bolder, darker border */
+            box-shadow: none; /* Remove default shadow */
+        }
+        .bg-kramp-lavender-transparent {
+            background-color: rgba(105, 125, 182, 0.2); /* Lavender with 20% opacity */
+            border: 3px solid var(--kramp-lavender-darker); /* Bolder, darker border */
+            box-shadow: none; /* Remove default shadow */
+        }
+        .bg-kramp-red-transparent {
+            background-color: rgba(155, 25, 21, 0.2); /* Red with 20% opacity for Threats */
+            border: 3px solid var(--kramp-red-darker); /* Bolder, darker border */
+            box-shadow: none; /* Remove default shadow */
+        }
+
+        /* Timeline specific styles */
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            padding: 20px 0;
+        }
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--kramp-black);
+            transform: translateY(-50%);
+        }
+        .timeline-event {
+            position: relative;
+            width: 30%; /* Adjust width for spacing */
+            text-align: center;
+            padding: 10px;
+            background-color: var(--kramp-white);
+            border: 2px solid var(--kramp-black);
+            border-radius: 0.5rem;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px; /* Position the dot on the line */
+            width: 20px;
+            height: 20px;
+            background-color: var(--kramp-black);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+        .timeline-event:first-child::before {
+            left: -10px; /* Ensure first dot is at the start */
+        }
+        .timeline-event:last-child::before {
+            right: -10px; /* Ensure last dot is at the end */
+            left: auto;
+        }
+        .timeline-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--kramp-black);
+            margin-bottom: 5px;
+        }
+        .timeline-description {
+            font-size: 0.75rem;
+            color: var(--kramp-black);
+        }
+        .timeline-date {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Responsive adjustments for timeline */
+        @media (max-width: 767px) { /* Mobile */
+            .timeline-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 20px;
+            }
+            .timeline-line {
+                width: 4px;
+                height: 100%;
+                top: 0;
+                left: 18px;
+                transform: none;
+            }
+            .timeline-event {
+                width: calc(100% - 40px);
+                margin-bottom: 20px;
+                text-align: left;
+                padding-left: 30px;
+            }
+            .timeline-event::before {
+                left: -10px;
+                top: 15px;
+                transform: none;
+            }
+            .timeline-event:first-child::before,
+            .timeline-event:last-child::before {
+                left: -10px;
+                right: auto;
+            }
+        }
+
+
+        /*
+            Infographic Narrative & Structure Plan:
+            The infographic will present Supply Plan Adherence (SPA) as an internal "market" performance analysis.
+            1.  Title & Introduction: What SPA is, its importance. Big "Target SPA" number.
+            2.  Scale of Operations: Illustrate the volume of planning (e.g., total advised units, order lines).
+            3.  Performance Deep Dive (OTIF Scenarios): Bar chart comparing planned vs. actual for scenarios. Donut chart for a key scenario's OTIF percentage.
+            4.  Deconstructing OTIF: Explaining on-time and in-full components and their multiplicative impact.
+            5.  Impact Analysis: Benefits of high SPA (operational efficiency, customer satisfaction).
+            6.  Process & Technology: Flowchart of the SPA process, highlighting Slim4's role.
+            7.  Strategic View (SWOT-like): Strengths, Weaknesses (based on scenarios), Opportunities (e.g., data accuracy), Threats (of low SPA).
+            8.  Conclusion & Call to Action: Reinforce continuous improvement.
+
+            Chosen Color Palette (Conceptual Name: "Kramp Branding"):
+            - Main Colors: Red (#9B1915), Black (#000000), White (#FFFFFF)
+            - Expressive Colors: Red (#9B1915), Yellow (#FFB332), Aqua (#63C4D8), Turquoise (#65B994), Lavender (#697DB6), Blue (#194461)
+
+            Specific Color Rules Applied:
+            - Single color figures: Red (#9B1915)
+            - Headers above each section: Black (#000000)
+            - Background Red (#9B1915), default text White (#FFFFFF)
+            - Background Black (#000000), default text White (#FFFFFF)
+            - Highlighting phrases with background: Red (#9B1915), text White (#FFFFFF)
+            - Emphasizing statements within red background: Yellow (#FFB332) with Bold typography
+            - Lines/arrows: Kramp Black (#000000)
+
+            Typography Applied:
+            - Font Family: Barlow Condensed
+            - Titles/Headings: Bold (font-weight: 700)
+            - Subheadings: Regular (font-weight: 400)
+            - Body Title Headings: Bold (font-weight: 700)
+            - Body Text: Regular (font-weight: 400)
+
+            Visualization Choices & Justification (Confirming NO SVG, NO MERMAID JS):
+            - Single Big Number (Target SPA): HTML/CSS. Goal: Inform. Justification: Highlight key target. NO SVG.
+            - Bar Chart (Scenario Performance): Chart.js (Canvas). Goal: Compare planned vs. actual. Justification: Effective for comparing quantities. NO SVG.
+            - Donut Chart (OTIF %): Chart.js (Canvas). Goal: Inform proportion. Justification: Clear visual of percentage. NO SVG.
+            - Flow Chart (SPA Process): HTML/CSS with Tailwind. Goal: Organize. Justification: Show process steps. NO SVG, NO MERMAID JS.
+            - List (Benefits of SPA): HTML `<ul>`. Goal: Organize. Justification: Clear, concise info. NO SVG.
+            - SWOT-like Quadrants: HTML/CSS cards. Goal: Inform. Justification: Structured strategic overview. NO SVG.
+
+            Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All charts use Chart.js (Canvas), diagrams use HTML/CSS.
+        */
+    </style>
+</head>
+<body class="font-barlow-regular">
+
+    <header class="header-bg text-kramp-white py-8 shadow-lg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-barlow-bold mb-2">Navigating Supply Plan Adherence Performance</h1>
+            <p class="text-lg font-barlow-regular">An In-depth Analysis of Our Supply Chain Execution Against Plan</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+
+        <section class="mb-12 md:col-span-2 bg-kramp-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-barlow-bold section-title mb-4 text-center">Understanding Our Performance Landscape</h2>
+            <p class="text-lg mb-6 font-barlow-regular leading-relaxed">
+                Supply Plan Adherence (SPA) is a foundational metric that quantifies how closely our operational execution aligns with strategic planning. It meticulously compares what we planned to do — in both timing and quantity, originating from the Slim4 order advice — with what was actually achieved by the time items are restocked on the warehouse shelf. This infographic delves into the critical aspects of SPA, its measurement through On-Time In-Full (OTIF), and its profound impact on our operational efficiency and customer satisfaction.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="kpi-card md:col-span-2">
+                    <h3 class="text-xl font-barlow-regular text-kramp-black mb-2">Why SPA Matters</h3>
+                    <p class="text-sm font-barlow-regular leading-relaxed">High SPA signals a predictable, efficient, and robust supply process. It mitigates risks, optimizes resource allocation, enhances cross-functional collaboration, and is vital for internal operational discipline. Ultimately, it ensures we meet our commitments reliably.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-kramp-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-barlow-bold section-title mb-4">Performance Insights: OTIF Scenarios</h2>
+            <p class="font-barlow-regular mb-4 leading-relaxed">
+                On-Time In-Full (OTIF) is the stringent metric for SPA. Let's examine how different scenarios impact our adherence. The On-Time In-Full Supplied Quantity (units meeting both time and quantity criteria) is key.
+            </p>
+            <div class="chart-container mx-auto">
+                <canvas id="scenarioPerformanceChart"></canvas>
+            </div>
+            <p class="text-sm font-barlow-regular mt-4 leading-relaxed">
+                This chart illustrates the stark difference between planned quantities and what is considered On-Time In-Full Supplied Quantity under various conditions. Any deviation in timing or completeness significantly impacts the outcome.
+            </p>
+        </section>
+
+        <section class="md:col-span-2 bg-kramp-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-barlow-bold section-title mb-4 text-center">Drilling Down: OTIF Score Impact</h2>
+            <p class="font-barlow-regular mb-6 text-center leading-relaxed">
+                The final OTIF score is a product of the On-Time Supplied Ratio and the In-Full Supplied Ratio. Even a partial miss in one dimension heavily penalizes the overall score.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="kpi-card p-4">
+                    <h3 class="text-lg font-barlow-regular text-kramp-black mb-2">Perfect Scenario</h3>
+                    <div class="chart-container !h-48 !max-h-48 mx-auto">
+                            <canvas id="donutPerfectOTIF"></canvas>
+                    </div>
+                    <p class="text-sm font-barlow-regular mt-2">100% On-Time & 100% In-Full results in 100% OTIF.</p>
+                </div>
+                <div class="kpi-card p-4">
+                    <h3 class="text-lg font-barlow-regular text-kramp-black mb-2">In-Full, Not On-Time</h3>
+                    <div class="chart-container !h-48 !max-h-48 mx-auto">
+                            <canvas id="donutLateOTIF"></canvas>
+                    </div>
+                    <p class="text-sm font-barlow-regular mt-2">Even if 100% quantity arrives, if it's late, the On-Time Supplied Ratio is 0%, leading to 0% OTIF.</p>
+                </div>
+                <div class="kpi-card p-4">
+                    <h3 class="text-lg font-barlow-regular text-kramp-black mb-2">Partially On-Time, Not In-Full (64% OTIF)</h3>
+                        <div class="chart-container !h-48 !max-h-48 mx-auto">
+                            <canvas id="donutPartialOTIF"></canvas>
+                    </div>
+                    <p class="text-sm font-barlow-regular mt-2">Delivering 80% of quantity on time (80% In-Full Supplied Ratio, 80% On-Time Supplied Ratio) yields 64% OTIF.</p>
+                </div>
+                <div class="kpi-card p-4">
+                    <h3 class="text-lg font-barlow-regular text-kramp-black mb-2">Partially On-Time, In-Full (80% OTIF)</h3>
+                    <div class="chart-container !h-48 !max-h-48 mx-auto">
+                            <canvas id="donutEightyOnTimeHundredInFull"></canvas>
+                    </div>
+                    <p class="text-sm font-barlow-regular mt-2">Delivering 100% of quantity, but only 80% on time (80% On-Time Supplied Ratio, 100% In-Full Supplied Ratio) yields 80% OTIF.</p>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-barlow-bold text-kramp-black mb-4 text-center">Timeline: In-Full Quantity Improvement (Late Delivery)</h3>
+                <p class="font-barlow-regular mb-6 text-center leading-relaxed">
+                    This timeline illustrates a scenario where an order initially had a quantity shortfall on the Expected Restocking Date, but the remaining quantity was delivered later, improving the overall In-Full status, though the On-Time status for the late portion remains zero.
+                </p>
+                <div class="timeline-container flex justify-between items-center relative">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-event">
+                        <div class="timeline-label">Expected Date</div>
+                        <div class="timeline-description">100 units expected to be on shelf.</div>
+                        <div class="timeline-date">June 15, 2024</div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-label">Initial Inbound</div>
+                        <div class="timeline-description">80 units inbounded (on time)</div>
+                        <div class="timeline-description">In-Full: 80%, On-Time: 80%</div>
+                        <div class="timeline-description">OTIF: 64%</div>
+                        <div class="timeline-date">June 15, 2024</div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-label">Later Inbound</div>
+                        <div class="timeline-description">Remaining 20 units inbounded (late)</div>
+                        <div class="timeline-description">Overall In-Full: 100%, Overall On-Time: 80%</div>
+                        <div class="timeline-description">Final OTIF: 80%</div>
+                        <div class="timeline-date">June 20, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <section class="bg-kramp-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-barlow-bold section-title mb-4">Deconstructing OTIF: The Strict Standard</h2>
+                <p class="font-barlow-regular mb-2 leading-relaxed">
+                    OTIF's strength lies in its two core components:
+                </p>
+                <ul class="list-disc list-inside space-y-2 mb-4 font-barlow-regular">
+                    <li><strong class="font-barlow-bold">On-Time Supplied Quantity</strong>: Quantity that arrived on or before the Expected On Shelf Date. If late, this component is zero for that order line, irrespective of quantity.</li>
+                    <li><strong class="font-barlow-bold">In-Full Supplied Quantity</strong>: The lesser of quantity ordered (Total Advised Quantity) and quantity delivered (Delivered Quantity). Over-deliveries do not improve this score beyond the planned amount.</li>
+                </ul>
+                <p class="font-barlow-regular mb-4 leading-relaxed">
+                    The final OTIF Supply Score is calculated by multiplying the On-Time Supplied Ratio by the In-Full Supplied Ratio. This multiplicative approach means excellence is required on both fronts. A 90% on-time and 90% in-full results in only 81% OTIF, not 90%.
+                </p>
+                <div class="bg-kramp-red border border-kramp-black rounded-md p-4 text-kramp-white">
+                    <h4 class="emphasize-yellow-text font-barlow-bold mb-2">Key Calculation Principle:</h4>
+                    <p class="text-sm font-barlow-regular">OTIF Supply Score = (On-Time Supplied Quantity / Total Advised Quantity) * (In-Full Supplied Quantity / Total Advised Quantity)</p>
+                    <p class="text-xs font-barlow-regular mt-1">This ensures shortfalls in either timing or quantity significantly impact the overall score, driving comprehensive performance improvements.</p>
+                </div>
+            </section>
+
+            <section class="bg-kramp-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-barlow-bold section-title mb-4">The Impact of High SPA</h2>
+                <p class="font-barlow-regular mb-4 leading-relaxed">
+                    Achieving high Supply Plan Adherence delivers tangible benefits across the business, affecting both internal efficiency and external customer satisfaction.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <span class="text-2xl accent-red-kramp mr-3">✓</span>
+                        <div>
+                            <h4 class="font-barlow-bold text-kramp-black">Enhanced Operational Efficiency</h4>
+                            <p class="text-sm font-barlow-regular">Reduces need for expedited shipments, minimizes buffer stock, and streamlines warehouse operations due to predictable inbound flows.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl accent-red-kramp mr-3">✓</span>
+                        <div>
+                            <h4 class="font-barlow-bold text-kramp-black">Optimized Inventory Management</h4>
+                            <p class="text-sm font-barlow-regular">Maintains optimal inventory levels, minimizing overstocking and stockouts, improving cash flow.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl accent-red-kramp mr-3">✓</span>
+                        <div>
+                            <h4 class="font-barlow-bold text-kramp-black">Improved Customer Satisfaction</h4>
+                            <p class="text-sm font-barlow-regular">Ensures consistent product availability and reliable delivery times, strengthening brand loyalty.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl accent-red-kramp mr-3">✓</span>
+                        <div>
+                            <h4 class="font-barlow-bold text-kramp-black">Stronger Supply Chain Collaboration</h4>
+                            <p class="text-sm font-barlow-regular">Fosters close collaboration across inventory, procurement, transport, and inbound teams, as SPA is a shared responsibility.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="md:col-span-2 bg-kramp-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-barlow-bold section-title mb-4 text-center">The SPA Process & The Role of Slim4</h2>
+            <p class="font-barlow-regular mb-6 text-center leading-relaxed">
+                The journey to Supply Plan Adherence is a structured process, heavily reliant on the initial planning data from our Slim4 system.
+            </p>
+            <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                <div class="text-center flowchart-step p-3 rounded-md shadow">
+                    <p class="font-barlow-bold">1. Slim4 System</p>
+                    <p class="text-xs font-barlow-regular">Generates <span>Order Advice</span></p>
+                    <p class="text-xs font-barlow-regular">(<span>Total Advised Quantity</span>)</p>
+                </div>
+                <div class="flowchart-arrow hidden md:block">➔</div>
+                <div class="flowchart-arrow block md:hidden">⬇</div>
+                <div class="text-center flowchart-step p-3 rounded-md shadow">
+                    <p class="font-barlow-bold">2. Planning Phase</p>
+                    <p class="text-xs font-barlow-regular">Define <span>Expected On Shelf Date</span></p>
+                    <p class="text-xs font-barlow-regular">(<span class="font-barlow-bold">Planned Order Date</span> + Total Lead Time)</p>
+                </div>
+                <div class="flowchart-arrow hidden md:block">➔</div>
+                    <div class="flowchart-arrow block md:hidden">⬇</div>
+                <div class="text-center flowchart-step p-3 rounded-md shadow">
+                    <p class="font-barlow-bold">3. Execution Tracking</p>
+                    <p class="text-xs font-barlow-regular">Monitor <span>Delivered Quantity</span></p>
+                    <p class="text-xs font-barlow-regular">& <span>Actual On Shelf Date</span> (OMS status)</p>
+                </div>
+                <div class="flowchart-arrow hidden md:block">➔</div>
+                <div class="flowchart-arrow block md:hidden">⬇</div>
+                <div class="text-center flowchart-step p-3 rounded-md shadow">
+                    <p class="font-barlow-bold">4. SPA Calculation</p>
+                    <p class="text-xs font-barlow-regular">Determine OTIF score</p>
+                    <p class="text-xs font-barlow-regular">(On-Time & In-Full)</p>
+                </div>
+            </div>
+            <p class="text-sm font-barlow-regular mt-6 leading-relaxed">
+                This "black box" approach measures the ultimate outcome: items being ready and available in stock. It encompasses supplier performance, transport, and internal warehouse operations. The accuracy of Lead Time data in Slim4 (supplier, transport, inbound handling) is crucial for a meaningful Expected On Shelf Date and thus a fair SPA assessment.
+            </p>
+        </section>
+
+        <section class="md:col-span-2 bg-kramp-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-barlow-bold section-title mb-6 text-center">Strategic Perspective on SPA</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-kramp-turquoise-transparent border border-kramp-turquoise-darker rounded-lg p-4">
+                    <h3 class="font-barlow-bold text-lg text-kramp-black mb-2">Strengths</h3>
+                    <ul class="list-disc list-inside text-sm font-barlow-regular space-y-1 text-kramp-black">
+                        <li>Clear KPI definition (SPA via OTIF).</li>
+                        <li>System-driven planning (Slim4).</li>
+                        <li>Holistic view covering entire supply process.</li>
+                        <li>Ability to pinpoint execution gaps.</li>
+                    </ul>
+                </div>
+                <div class="bg-kramp-yellow-transparent border border-kramp-yellow-darker rounded-lg p-4">
+                    <h3 class="font-barlow-bold text-lg text-kramp-black mb-2">Weaknesses (Areas for Vigilance)</h3>
+                    <ul class="list-disc list-inside text-sm font-barlow-regular space-y-1 text-kramp-black">
+                        <li>Sensitivity to late deliveries (0% OTIF impact).</li>
+                        <li>Dependency on accurate master data in Slim4 (Lead Times).</li>
+                        <li>Not punishing too much quantities.</li>
+                    </ul>
+                </div>
+                <div class="bg-kramp-aqua-transparent border border-kramp-aqua-darker rounded-lg p-4">
+                    <h3 class="font-barlow-bold text-lg text-kramp-black mb-2">Opportunities</h3>
+                    <ul class="list-disc list-inside text-sm font-barlow-regular space-y-1 text-kramp-black">
+                        <li>Continuously refine Slim4 master data for better planning.</li>
+                        <li>Enhance supplier collaboration and performance monitoring.</li>
+                        <li>Optimize warehouse inbound processes.</li>
+                        <li>Leverage SPA insights for better forecasting.</li>
+                    </ul>
+                </div>
+                <div class="bg-kramp-red-transparent border border-kramp-red-darker rounded-lg p-4">
+                    <h3 class="font-barlow-bold text-lg text-kramp-red mb-2">Threats (Risks of Low SPA)</h3>
+                    <ul class="list-disc list-inside text-sm font-barlow-regular space-y-1 text-kramp-black">
+                        <li>Increased operational costs (expediting, excess buffer).</li>
+                        <li>Reduced customer satisfaction due to stockouts/delays.</li>
+                        <li>Inefficient resource utilization.</li>
+                        <li>Erosion of supply chain predictability and reliability.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-12 md:col-span-2 bg-kramp-red rounded-lg shadow-md p-8 text-center text-kramp-white">
+            <h2 class="text-3xl font-barlow-bold mb-4">Driving Supply Chain Reliability Through Adherence</h2>
+            <p class="text-lg font-barlow-regular mb-6 leading-relaxed">
+                Supply Plan Adherence is more than just a metric; it's a commitment to operational excellence and reliability. Achieving high SPA is an ongoing journey requiring continuous monitoring, in-depth analysis of deviations, and agile adaptation. By collectively focusing on improving SPA, we cultivate a resilient, efficient, and successful supply chain.
+            </p>
+        </section>
+    </main>
+
+    <footer class="py-8 text-center text-kramp-black text-sm border-t border-gray-200 bg-kramp-white">
+        &copy; <script>document.write(new Date().getFullYear())</script> Kramp Supply Chain Analytics. All rights reserved.
+        <p class="font-barlow-regular">Infographic based on internal Supply Plan Adherence research.</p>
+    </footer>
+
+    <script>
+        const krampRed = '#9B1915';
+        const krampBlack = '#000000';
+        const krampWhite = '#FFFFFF';
+        const krampYellow = '#FFB332';
+        const krampAqua = '#63C4D8';
+        const krampTurquoise = '#65B994';
+        const krampLavender = '#697DB6';
+        const krampBlue = '#194461';
+
+        const krampRedDarker = '#780000';
+        const krampYellowDarker = '#E38A0A';
+        const krampAquaDarker = '#0096A7';
+        const krampTurquoiseDarker = '#008259';
+        const krampLavenderDarker = '#2F498D';
+        const krampBlueDarker = '#121F32';
+
+
+        const expressiveColors = [krampRed, krampYellow, krampAqua, krampTurquoise, krampLavender, krampBlue];
+
+        function formatLabelForChart(label, maxWidth = 16) {
+            if (typeof label !== 'string') return label;
+
+            if (label.length > maxWidth) {
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if (currentLine.length === 0) {
+                        currentLine = word;
+                    } else if ((currentLine + ' ' + word).length <= maxWidth) {
+                        currentLine += ' ' + word;
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    }
+                }
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+                return lines;
+            }
+            return label;
+        }
+
+        const tooltipTitleCallback = function(tooltipItems) {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    titleFont: { family: 'Barlow Condensed', size: 14, weight: 'bold' },
+                    bodyFont: { family: 'Barlow Condensed', size: 12, weight: 'regular' },
+                    padding: 10
+                },
+                legend: {
+                    labels: {
+                        color: krampBlack,
+                        font: { family: 'Barlow Condensed', size: 12, weight: 'regular' }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: krampBlack,
+                        font: { family: 'Barlow Condensed', size: 12, weight: 'regular' }
+                    },
+                    grid: {
+                        color: '#E5E7EB' /* Tailwind gray-200, kept for subtle grid */
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: krampBlack,
+                        font: { family: 'Barlow Condensed', size: 12, weight: 'regular' }
+                    },
+                     grid: {
+                        display: false
+                    }
+                }
+            }
+        };
+
+        // Scenario Performance Chart (Bar Chart)
+        const scenarioLabels = ["Perfect Scenario", "Partially On-Time, Not In-Full", "In-Full, Partially On-Time", "Late & Short", "Overdue"].map(label => formatLabelForChart(label));
+        const scenarioPerformanceCtx = document.getElementById('scenarioPerformanceChart').getContext('2d');
+        new Chart(scenarioPerformanceCtx, {
+            type: 'bar',
+            data: {
+                labels: scenarioLabels,
+                datasets: [
+                    {
+                        label: 'Planned Quantity',
+                        data: [100, 100, 100, 100, 100],
+                        backgroundColor: krampRed, /* Blue from expressive colors */
+                        borderColor: krampRed,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'On-Time Quantity',
+                        data: [100, 80, 0, 0, 0], /* Illustrative data based on scenario descriptions */
+                        backgroundColor: krampTurquoise, /* Turquoise for On-Time */
+                        borderColor: krampTurquoise,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'In-Full Quantity',
+                        data: [100, 80, 100, 70, 0], /* Illustrative data based on scenario descriptions */
+                        backgroundColor: krampBlue, /* Yellow for In-Full */
+                        borderColor: krampBlue,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: { ...commonChartOptions }
+        });
+
+        // Donut Chart Options (common for all donuts)
+        const commonDonutOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return tooltipItems[0].chart.data.datasets[0].label;
+                        },
+                        label: function(tooltipItem) {
+                             let label = tooltipItem.chart.data.labels[tooltipItem.dataIndex] || '';
+                             let value = tooltipItem.formattedValue;
+                             return `${label}: ${value}%`;
+                        }
+                    },
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    titleFont: { family: 'Barlow Condensed', size: 14, weight: 'bold' },
+                    bodyFont: { family: 'Barlow Condensed', size: 12, weight: 'regular' },
+                    padding: 10
+                },
+                legend: {
+                    display: false
+                }
+            }
+        };
+
+        // Donut: Perfect OTIF
+        const donutPerfectCtx = document.getElementById('donutPerfectOTIF').getContext('2d');
+        new Chart(donutPerfectCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Achieved OTIF', 'Missed'],
+                datasets: [{
+                    label: 'Perfect Scenario (100% OTIF)',
+                    data: [100, 0],
+                    backgroundColor: [krampTurquoise, krampRed], /* Turquoise and Red */
+                    borderColor: [krampWhite],
+                    borderWidth: 2
+                }]
+            },
+            options: { ...commonDonutOptions }
+        });
+
+        // Donut: Partial OTIF (On-Time, Not In-Full - 64%)
+        const donutPartialCtx = document.getElementById('donutPartialOTIF').getContext('2d');
+        new Chart(donutPartialCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Achieved OTIF', 'Missed'],
+                datasets: [{
+                    label: 'On-Time, Not In-Full (64% OTIF)',
+                    data: [64, 36],
+                    backgroundColor: [krampTurquoise, krampRed], /* Turquoise and Red */
+                    borderColor: [krampWhite],
+                    borderWidth: 2
+                }]
+            },
+            options: { ...commonDonutOptions }
+        });
+
+        // Donut: Late OTIF (0%)
+        const donutLateCtx = document.getElementById('donutLateOTIF').getContext('2d');
+        new Chart(donutLateCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Achieved OTIF', 'Missed'],
+                datasets: [{
+                    label: 'In-Full, Not On-Time (0% OTIF)',
+                    data: [0.1, 99.9], /* Show a sliver for 0 for visual effect */
+                    backgroundColor: [krampTurquoise, krampRed], /* Turquoise and Red */
+                    borderColor: [krampWhite],
+                    borderWidth: 2
+                }]
+            },
+            options: { ...commonDonutOptions }
+        });
+
+        // Donut: 80% On-Time, 100% In-Full (80% OTIF)
+        const donutEightyOnTimeHundredInFullCtx = document.getElementById('donutEightyOnTimeHundredInFull').getContext('2d');
+        new Chart(donutEightyOnTimeHundredInFullCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Achieved OTIF', 'Missed'],
+                datasets: [{
+                    label: '80% On-Time, 100% In-Full (80% OTIF)',
+                    data: [80, 20],
+                    backgroundColor: [krampTurquoise, krampRed], /* Turquoise and Red */
+                    borderColor: [krampWhite],
+                    borderWidth: 2
+                }]
+            },
+            options: { ...commonDonutOptions }
+        });
+
+    </script>
+</body>
+</html>
