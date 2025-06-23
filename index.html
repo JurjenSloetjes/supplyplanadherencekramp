@@ -46,7 +46,7 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
         }
-         /* Decision Flow Card Styles from original template */
+         /* Decision Flow Card Styles */
         .df-card-container {
             display: flex;
             flex-direction: column;
@@ -61,6 +61,7 @@
             border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            align-items: center; /* This ensures vertical alignment for the grid cells */
         }
         .df-question {
             background-color: #e5e7eb;
@@ -71,15 +72,20 @@
             text-align: center;
             font-size: 1.125rem;
             border-right: 2px solid black;
+            height: 100%; /* Ensure it fills the grid cell height */
         }
         .df-answers {
             display: flex;
             flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            height: 100%; /* Ensure it fills the grid cell height */
         }
         .df-answer {
             padding: 1rem;
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
         }
         .df-answer:first-child {
             border-bottom: 2px solid black;
@@ -317,7 +323,7 @@
                 <div class="max-w-3xl mx-auto space-y-3">
                     <div class="p-3 bg-gray-100 rounded-lg">
                         <h4 class="font-bold text-black">Specific Warehouses</h4>
-                        <p class="font-normal text-gray-600 text-sm">Warehouses '100', '250', and '400' are excluded because the 'actual on shelf date' is not measured for these locations, making an accurate SPA calculation impossible.</p>
+                        <p class="font-normal text-gray-600 text-sm">The warehouses for Denmark, Sweden, and Finland (before OMS) are currently excluded. The 'actual on shelf date' is not yet measured for these locations, which is a prerequisite for an accurate SPA calculation.</p>
                     </div>
                     <div class="p-3 bg-gray-100 rounded-lg">
                         <h4 class="font-bold text-black">Internal Stock Movements</h4>
@@ -345,13 +351,13 @@
                     </div>
 
                     <div class="p-4 rounded-lg bg-white shadow-md">
-                        <div class="text-4xl mb-4">🎯</div>
+                        <div class="text-4xl mb-4">📊</div>
                         <h4 class="font-bold text-black text-xl">Is our planning data accurate?</h4>
                         <p class="font-normal text-gray-700 mt-2 text-sm">Consistently low SPA can indicate that the lead times and order parameters in Slim4 need to be reviewed and updated.</p>
                     </div>
 
                      <div class="p-4 rounded-lg bg-white shadow-md">
-                        <div class="text-4xl mb-4">📊</div>
+                        <div class="text-4xl mb-4">🎯</div>
                         <h4 class="font-bold text-black text-xl">How predictable is our supply chain?</h4>
                         <p class="font-normal text-gray-700 mt-2 text-sm">A high SPA score gives us confidence in our stock availability forecasts and our ability to meet commitments without costly surprises.</p>
                     </div>
